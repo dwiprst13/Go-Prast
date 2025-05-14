@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"unicode"
+	"strings"
 )
 
 type identitas struct {
@@ -19,6 +20,32 @@ type dataKeluarga struct {
 	anggota []identitas
 }
 
+func scanInput() string {
+	var input string
+	bufioReader := bufio.NewReader(os.Stdin)
+	input, _ = bufioReader.ReadString('\n')
+	return input
+}
+
+func upperCaseFirstLetter(s string) string {
+	words := strings.Fields(s)
+	for i, word := range words {
+		if len(word) > 0 {
+			word = strings.ToUpper(string(word[0])) + word[1:]
+			words[i] = word
+		}
+	}
+	return strings.Join(words, " ")
+}
+
+func scanInputNama() string {
+	var input string
+	bufioReader := bufio.NewReader(os.Stdin)
+	input, _ = bufioReader.ReadString('\n')
+	upperCaseFirstLetter(input)
+	return input
+}
+
 func isNumeric(s string) bool {
 	for _, r := range s {
 		if !unicode.IsDigit(r) {
@@ -28,17 +55,12 @@ func isNumeric(s string) bool {
 	return true
 }
 
-func scanInput() string {
-	var input string
-	bufioReader := bufio.NewReader(os.Stdin)
-	input, _ = bufioReader.ReadString('\n')
-	return input
-}
-
 func scanInputNIK() string {
 	var input string
+	var sb strings.Builder
 	bufioReader := bufio.NewReader(os.Stdin)
 	input, _ = bufioReader.ReadString('\n')
+	input = strings.TrimSpace(input) 
 	if input == "\n" {
 		fmt.Println("NIK tidak boleh kosong")
 		return scanInputNIK()
@@ -47,13 +69,16 @@ func scanInputNIK() string {
 		fmt.Println("NIK harus terdiri dari 16 digit angka")
 		return scanInputNIK()
 	}
+	sb.WriteString(input)
+	sb.WriteRune('\n')
+	input = sb.String()
 	return input
 }
 
 func addAnggota(daftarKeluarga *dataKeluarga) {
 	var nama, nik, alamat, pekerjaan, status string
 	fmt.Println("Masukkan nama anggota keluarga:")
-	nama = scanInput()
+	nama = scanInputNama()
 	fmt.Println("Masukkan NIK anggota keluarga:")
 	nik = scanInputNIK()
 	fmt.Println("Masukkan alamat anggota keluarga:")
